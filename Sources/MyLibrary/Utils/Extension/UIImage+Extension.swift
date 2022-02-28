@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension UIImage {
+public extension UIImage {
     // 修复图片旋转
     func fixOrientation() -> UIImage? {
         if self.imageOrientation == .up {

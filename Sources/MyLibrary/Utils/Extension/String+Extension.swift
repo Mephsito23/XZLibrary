@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension String {
+public extension String {
     func getClass() -> AnyClass? {
         guard let spaceName = Bundle.main.infoDictionary!["CFBundleExecutable"] as? String else {
             print("获取命名空间失败")
@@ -36,7 +36,7 @@ extension String {
 }
 
 // swiftformat:disable redundantSelf
-extension String {
+public extension String {
     func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
         let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)

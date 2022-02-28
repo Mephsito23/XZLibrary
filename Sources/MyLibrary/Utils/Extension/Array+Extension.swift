@@ -27,7 +27,7 @@ public extension Array {
     }
 }
 
-extension Array where Element: Publisher {
+public extension Array where Element: Publisher {
     var zipAll: AnyPublisher<[Element.Output], Element.Failure> {
         let initial = Just([Element.Output]())
             .setFailureType(to: Element.Failure.self)

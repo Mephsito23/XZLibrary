@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FileHelper {
+public enum FileHelper {
     static func loadBundledJSON<T: Decodable>(file: String) -> T {
         guard let url = Bundle.main.url(forResource: file, withExtension: "json") else {
             fatalError("Resource not found: \(file)")

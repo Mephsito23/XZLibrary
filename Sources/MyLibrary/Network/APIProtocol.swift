@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol APIProtocol {
+public protocol APIProtocol {
     var baseURL: URL { get }
 
     var path: String { get }
@@ -23,23 +23,4 @@ protocol APIProtocol {
     var headers: [String: String]? { get }
 }
 
-enum Method {
-    case GET, POST, PUT, DELETE
 
-    func string() -> String {
-        switch self {
-        case .GET:
-            return "GET"
-        case .POST:
-            return "POST"
-        case .DELETE:
-            return "DELETE"
-        case .PUT:
-            return "PUT"
-        }
-    }
-}
-
-enum ParameterEncoding {
-    case URLEncoding, JSONEncoding, FileEncoding
-}

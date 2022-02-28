@@ -11,7 +11,7 @@ import Network
 
 // MARK: - NWPathMonitor Subscription
 
-extension NWPathMonitor {
+public extension NWPathMonitor {
     class NetworkStatusSubscription<S: Subscriber>: Subscription where S.Input == NWPath.Status {
         private let subscriber: S?
         
@@ -27,7 +27,7 @@ extension NWPathMonitor {
             self.queue = queue
         }
         
-        func request(_ demand: Subscribers.Demand) {
+        public func request(_ demand: Subscribers.Demand) {
             // 1
             monitor.pathUpdateHandler = { [weak self] path in
                 guard let self = self else { return }
@@ -39,7 +39,7 @@ extension NWPathMonitor {
             monitor.start(queue: queue)
         }
         
-        func cancel() {
+        public func cancel() {
             // 3
             monitor.cancel()
         }
@@ -48,11 +48,11 @@ extension NWPathMonitor {
 
 // MARK: - NWPathMonitor Publisher
 
-extension NWPathMonitor {
+public extension NWPathMonitor {
     struct NetworkStatusPublisher: Publisher {
         // 1
-        typealias Output = NWPath.Status
-        typealias Failure = Never
+        public typealias Output = NWPath.Status
+        public typealias Failure = Never
         
         // 2
         private let monitor: NWPathMonitor
@@ -65,7 +65,7 @@ extension NWPathMonitor {
             self.queue = queue
         }
         
-        func receive<S>(subscriber: S) where S: Subscriber, Never == S.Failure, NWPath.Status == S.Input {
+        public func receive<S>(subscriber: S) where S: Subscriber, Never == S.Failure, NWPath.Status == S.Input {
             // 3
             let subscription = NetworkStatusSubscription(
                 subscriber: subscriber,

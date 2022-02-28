@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension UIApplication {
+public extension UIApplication {
     var keyWindow: UIWindow? {
         // Get connected scenes
         return UIApplication.shared.connectedScenes

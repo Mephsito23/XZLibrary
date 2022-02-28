@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MyError: Error {
+public enum MyError: Error {
     case errorDesc(String?)
     case netEerrorData(Data)
     case fileError

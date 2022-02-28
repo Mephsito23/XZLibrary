@@ -27,8 +27,8 @@ let appEncoder: JSONEncoder = {
     return encoder
 }()
 
-struct MyRequest {
-    public static let shared = MyRequest()
+public struct RequestManager {
+    public static let shared = RequestManager()
 
     @available(*, deprecated, message: "1.0.8之后废弃")
     public func request<Item>(endpoint: APIProtocol) -> AnyPublisher<Item, Error> where Item: Decodable {
@@ -65,7 +65,7 @@ struct MyRequest {
     }
 }
 
-extension MyRequest {
+extension RequestManager {
     private func setupRequestUrl(_ endpoint: APIProtocol) -> URLRequest {
         let queryURL = endpoint.baseURL.appendingPathComponent(endpoint.path)
         var components = URLComponents(url: queryURL, resolvingAgainstBaseURL: true)!
