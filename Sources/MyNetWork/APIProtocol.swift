@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyModel
 
 public protocol APIProtocol {
     var baseURL: URL { get }

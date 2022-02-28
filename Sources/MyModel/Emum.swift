@@ -10,7 +10,7 @@ import Foundation
 public enum MyMethod {
     case GET, POST, PUT, DELETE
 
-    func string() -> String {
+    public func string() -> String {
         switch self {
         case .GET:
             return "GET"

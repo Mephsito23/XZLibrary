@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 import MobileCoreServices
+import MyModel
 import Photos
 import SwifterSwift
 import UIKit
