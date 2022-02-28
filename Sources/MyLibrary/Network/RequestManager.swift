@@ -12,21 +12,6 @@ import Photos
 import SwifterSwift
 import UIKit
 
-public let kBodyKey = "body"
-public let kDataKey = "data"
-
-public let appDecoder: JSONDecoder = {
-    let decoder = JSONDecoder()
-    decoder.keyDecodingStrategy = .convertFromSnakeCase
-    return decoder
-}()
-
-public let appEncoder: JSONEncoder = {
-    let encoder = JSONEncoder()
-    encoder.keyEncodingStrategy = .convertToSnakeCase
-    return encoder
-}()
-
 public struct RequestManager<API> where API: APIProtocol {
     public init() {}
 
