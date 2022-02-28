@@ -30,6 +30,7 @@ let package = Package(
             name: "MyUtils",
             dependencies: [
                 "SwifterSwift",
+                "MyModel",
             ]),
         .target(
             name: "MyModel",

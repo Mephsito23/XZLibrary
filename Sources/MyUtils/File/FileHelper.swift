@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MyModel
 
 public enum FileHelper {
     static func loadBundledJSON<T: Decodable>(file: String) -> T {
