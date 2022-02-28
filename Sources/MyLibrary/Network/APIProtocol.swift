@@ -12,7 +12,7 @@ public protocol APIProtocol {
 
     var path: String { get }
 
-    var method: Method { get }
+    var method: MyMethod { get }
 
     var parameterEncoding: ParameterEncoding { get }
 
@@ -22,5 +22,3 @@ public protocol APIProtocol {
 
     var headers: [String: String]? { get }
 }
-
-

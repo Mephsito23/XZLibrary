@@ -15,23 +15,23 @@ import UIKit
 public let kBodyKey = "body"
 public let kDataKey = "data"
 
-let appDecoder: JSONDecoder = {
+public let appDecoder: JSONDecoder = {
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     return decoder
 }()
 
-let appEncoder: JSONEncoder = {
+public let appEncoder: JSONEncoder = {
     let encoder = JSONEncoder()
     encoder.keyEncodingStrategy = .convertToSnakeCase
     return encoder
 }()
 
-public struct RequestManager {
-    public static let shared = RequestManager()
+public struct RequestManager<API> where API: APIProtocol {
+    public init() {}
 
     @available(*, deprecated, message: "1.0.8之后废弃")
-    public func request<Item>(endpoint: APIProtocol) -> AnyPublisher<Item, Error> where Item: Decodable {
+    public func request<Item>(endpoint: API) -> AnyPublisher<Item, Error> where Item: Decodable {
         let requestURL = setupRequestUrl(endpoint)
         return URLSession.shared
             .dataTaskPublisher(for: requestURL)
@@ -47,7 +47,7 @@ public struct RequestManager {
             .eraseToAnyPublisher()
     }
 
-    public func requestData(endpoint: APIProtocol) async throws -> (Data, URLResponse) {
+    public func requestData(endpoint: API) async throws -> (Data, URLResponse) {
         let requestURL = setupRequestUrl(endpoint)
         var data: Data, response: URLResponse
         if #available(iOS 15.0, *) {
@@ -66,7 +66,7 @@ public struct RequestManager {
 }
 
 extension RequestManager {
-    private func setupRequestUrl(_ endpoint: APIProtocol) -> URLRequest {
+    private func setupRequestUrl(_ endpoint: API) -> URLRequest {
         let queryURL = endpoint.baseURL.appendingPathComponent(endpoint.path)
         var components = URLComponents(url: queryURL, resolvingAgainstBaseURL: true)!
         components.queryItems = [URLQueryItem]()

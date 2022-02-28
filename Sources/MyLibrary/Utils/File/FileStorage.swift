@@ -9,19 +9,19 @@
 import Foundation
 
 @propertyWrapper
-struct FileStorage<T: Codable> {
+public struct FileStorage<T: Codable> {
     var value: T?
 
     let directory: FileManager.SearchPathDirectory
     let fileName: String
 
-    init(directory: FileManager.SearchPathDirectory, fileName: String) {
+    public init(directory: FileManager.SearchPathDirectory, fileName: String) {
         value = try? FileHelper.loadJSON(from: directory, fileName: fileName)
         self.directory = directory
         self.fileName = fileName
     }
 
-    var wrappedValue: T? {
+    public var wrappedValue: T? {
         set {
             value = newValue
             if let value = newValue {

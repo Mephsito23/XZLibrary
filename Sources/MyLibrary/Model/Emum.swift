@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Method {
+public enum MyMethod {
     case GET, POST, PUT, DELETE
 
     func string() -> String {
