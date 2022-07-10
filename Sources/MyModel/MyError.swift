@@ -9,15 +9,19 @@ import Foundation
 
 public enum MyError: Error {
     case errorDesc(String?)
-    case netEerrorData(Data)
+    case netEerrorData(Data, Int)
     case fileError
 }
 
 extension MyError: LocalizedError {
-    var localizedDescription: String {
-        if case let .errorDesc(desc) = self, let message = desc {
-            return message
+    public var myLocalizedDescription: String {
+        switch self {
+        case let .errorDesc(desc):
+            return desc ?? ""
+        case let .netEerrorData(data, code):
+            return "httpResponseCode=>\(code)\n" + (String(data: data, encoding: .utf8) ?? "network business error")
+        case .fileError:
+            return "file Error"
         }
-        return ""
     }
 }

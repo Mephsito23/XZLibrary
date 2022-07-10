@@ -11,6 +11,7 @@ import MobileCoreServices
 import MyModel
 import Photos
 import SwifterSwift
+import SwiftUI
 import UIKit
 
 public struct RequestManager<API> where API: APIProtocol {
@@ -25,7 +26,8 @@ public struct RequestManager<API> where API: APIProtocol {
                 guard let httpResponse = response as? HTTPURLResponse,
                       httpResponse.statusCode == 200
                 else {
-                    throw MyError.netEerrorData(data)
+                    let httpResponse = response as? HTTPURLResponse
+                    throw MyError.netEerrorData(data, httpResponse?.statusCode ?? -1)
                 }
                 return data
             }
@@ -45,7 +47,8 @@ public struct RequestManager<API> where API: APIProtocol {
         guard let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200
         else {
-            throw MyError.netEerrorData(data)
+            let httpResponse = response as? HTTPURLResponse
+            throw MyError.netEerrorData(data, httpResponse?.statusCode ?? -1)
         }
         return (data, response)
     }
