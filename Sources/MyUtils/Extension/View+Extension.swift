@@ -24,3 +24,11 @@ public extension View {
         return EmptyView()
     }
 }
+
+public extension View {
+    func then(_ body: (inout Self) -> Void) -> Self {
+        var result = self
+        body(&result)
+        return result
+    }
+}
