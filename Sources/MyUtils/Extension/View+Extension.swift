@@ -31,4 +31,16 @@ public extension View {
         body(&result)
         return result
     }
+
+    @ViewBuilder func `if`<TrueContent: View, FalseContent: View>(
+        _ condition: Bool,
+        @ViewBuilder trueContent: (Self) -> TrueContent,
+        @ViewBuilder else falseContent: (Self) -> FalseContent
+    ) -> some View {
+        if condition {
+            trueContent(self)
+        } else {
+            falseContent(self)
+        }
+    }
 }
