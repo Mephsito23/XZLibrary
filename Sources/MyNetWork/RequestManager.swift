@@ -63,10 +63,13 @@ extension RequestManager {
         if endpoint.parameterEncoding == .URLEncoding {
             if let parameter = endpoint.parameters {
                 for (_, value) in parameter.enumerated() {
-                    if let noNilValue = value.value {
-                        let queryValue = "\(noNilValue)"
-                        components.queryItems?.append(URLQueryItem(name: value.key, value: queryValue))
-                    }
+//                    if let noNilValue = value.value {
+//                        let queryValue = "\(noNilValue)"
+//                        components.queryItems?.append(URLQueryItem(name: value.key, value: queryValue))
+//                    }
+
+                    let queryValue = "\(value.value)"
+                    components.queryItems?.append(URLQueryItem(name: value.key, value: queryValue))
                 }
             }
         }

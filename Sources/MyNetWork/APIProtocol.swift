@@ -17,7 +17,7 @@ public protocol APIProtocol {
 
     var parameterEncoding: ParameterEncoding { get }
 
-    var parameters: [String: Any?]? { get }
+    var parameters: [String: Any]? { get }
 
     var requiresAnyToken: Bool { get }
 
