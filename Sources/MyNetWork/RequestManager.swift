@@ -76,7 +76,8 @@ extension RequestManager {
 
         var requestURL = URLRequest(url: components.url!)
         requestURL.httpMethod = endpoint.method.string()
-        requestURL.allHTTPHeaderFields = endpoint.headers
+        let headers  = endpoint.headers
+        requestURL.allHTTPHeaderFields = headers
         requestURL.timeoutInterval = 30.0
 
         if endpoint.parameterEncoding == .FileEncoding {
