@@ -11,6 +11,7 @@ public enum MyError: Error {
     case errorDesc(String?)
     case netEerrorData(Data, Int)
     case fileError
+    case networkingFailed(Error)
 }
 
 extension MyError: LocalizedError {
@@ -22,6 +23,8 @@ extension MyError: LocalizedError {
             return "httpResponseCode=>\(code)\n" + (String(data: data, encoding: .utf8) ?? "network business error")
         case .fileError:
             return "file Error"
+        case let .networkingFailed(error):
+            return error.localizedDescription
         }
     }
 }

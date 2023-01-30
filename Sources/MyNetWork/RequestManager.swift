@@ -52,6 +52,37 @@ public struct RequestManager<API> where API: APIProtocol {
         }
         return (data, response)
     }
+
+    public func downloadFile(endpoint: API) async throws -> (URL, URLResponse) {
+        let requestURL = setupRequestUrl(endpoint)
+        var url: URL, response: URLResponse
+        if #available(iOS 15.0, *) {
+            (url, response) = try await URLSession.shared.download(for: requestURL)
+        } else {
+            (url, response) = try await URLSession.shared.download(from: requestURL)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200
+        else {
+            let httpResponse = response as? HTTPURLResponse
+            throw MyError.errorDesc("network error:\(httpResponse?.statusCode ?? -1)")
+        }
+
+        let locationPath = url.path
+        let fileName = response.suggestedFilename ?? ""
+        guard locationPath != "", fileName != "" else { throw MyError.errorDesc("path or fileName is nil") }
+        let fm = FileManager.default
+        let documentUrl = try fm.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let downloadURL = documentUrl.appendingPathComponent("TimeDownload")
+        if !fm.fileExists(atPath: downloadURL.path) {
+            try fm.createDirectory(at: downloadURL, withIntermediateDirectories: true)
+        }
+
+        let filePath = downloadURL.path + "/" + fileName
+        try fm.moveItem(atPath: locationPath, toPath: filePath)
+        return (URL(fileURLWithPath: filePath), response)
+    }
 }
 
 extension RequestManager {
@@ -76,7 +107,7 @@ extension RequestManager {
 
         var requestURL = URLRequest(url: components.url!)
         requestURL.httpMethod = endpoint.method.string()
-        let headers  = endpoint.headers
+        let headers = endpoint.headers
         requestURL.allHTTPHeaderFields = headers
         requestURL.timeoutInterval = 30.0
 
@@ -171,6 +202,19 @@ extension URLSession {
                 continuation.resume(returning: (data, response))
             }
             task.resume()
+        }
+    }
+
+    func download(from url: URLRequest) async throws -> (URL, URLResponse) {
+        try await withCheckedThrowingContinuation { continuation in
+            let downloadTask = self.downloadTask(with: url) { url, response, error in
+                guard let url = url, let response = response else {
+                    let error = error ?? URLError(.badServerResponse)
+                    return continuation.resume(throwing: error)
+                }
+                continuation.resume(returning: (url, response))
+            }
+            downloadTask.resume()
         }
     }
 }
