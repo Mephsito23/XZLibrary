@@ -17,7 +17,6 @@ import UIKit
 public struct RequestManager<API> where API: APIProtocol {
     public init() {}
 
-    @available(*, deprecated, message: "1.0.8之后废弃")
     public func request<Item>(endpoint: API) -> AnyPublisher<Item, Error> where Item: Decodable {
         let requestURL = setupRequestUrl(endpoint)
         return URLSession.shared
