@@ -79,6 +79,11 @@ public struct RequestManager<API> where API: APIProtocol {
         }
 
         let filePath = downloadURL.path + "/" + fileName
+        print("locationPath==>\(locationPath)")
+        print("filePath==>\(filePath)")
+        if fm.fileExists(atPath: filePath) {
+            try fm.removeItem(atPath: filePath)
+        }
         try fm.moveItem(atPath: locationPath, toPath: filePath)
         return (URL(fileURLWithPath: filePath), response)
     }
