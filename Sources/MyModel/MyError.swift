@@ -12,9 +12,14 @@ public enum MyError: Error {
     case netEerrorData(Data, Int)
     case fileError
     case networkingFailed(Error)
+    case decodableError
 }
 
 extension MyError: LocalizedError {
+    public var localizedDescription: String {
+        myLocalizedDescription
+    }
+
     public var myLocalizedDescription: String {
         switch self {
         case let .errorDesc(desc):
@@ -25,6 +30,8 @@ extension MyError: LocalizedError {
             return "file Error"
         case let .networkingFailed(error):
             return error.localizedDescription
+        case .decodableError:
+            return "decodable Error"
         }
     }
 }
