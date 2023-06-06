@@ -47,6 +47,10 @@ public struct RequestManager<API> where API: APIProtocol {
               httpResponse.statusCode == 200
         else {
             let httpResponse = response as? HTTPURLResponse
+            #if DEBUG
+            let errorStr = "httpResponseCode=>\(String(describing: httpResponse?.statusCode))\n" + (String(data: data, encoding: .utf8) ?? "network business error")
+            print(errorStr)
+            #endif
             throw MyError.netEerrorData(data, httpResponse?.statusCode ?? -1)
         }
         return (data, response)

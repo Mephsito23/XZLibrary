@@ -7,7 +7,12 @@
 
 import Foundation
 
-public enum MyError: Error {
+public enum MyError: Error, Equatable {
+    public static func == (lhs: MyError, rhs: MyError) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    var id: UUID { UUID() }
     case errorDesc(String?)
     case netEerrorData(Data, Int)
     case fileError
@@ -16,11 +21,7 @@ public enum MyError: Error {
 }
 
 extension MyError: LocalizedError {
-    public var localizedDescription: String {
-        myLocalizedDescription
-    }
-
-    public var myLocalizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case let .errorDesc(desc):
             return desc ?? ""
