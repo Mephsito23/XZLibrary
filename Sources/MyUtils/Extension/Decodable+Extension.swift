@@ -11,7 +11,7 @@ import MyModel
 public extension Decodable {
     init(data: Data, using decoder: JSONDecoder = .init()) throws {
         guard let parsed = try? decoder.decode(Self.self, from: data) else {
-            throw MyError.fileError
+            throw MyError.decodableError
         }
         self = parsed
     }

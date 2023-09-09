@@ -29,7 +29,7 @@ public extension String {
     }
 
     func removeWhitespacesAndNewlines() -> String {
-        return self
+        self
             .replacingOccurrences(of: "\n", with: "")
             .replacingOccurrences(of: " ", with: "")
     }
@@ -37,9 +37,16 @@ public extension String {
 
 // swiftformat:disable redundantSelf
 public extension String {
-    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+    func height(withConstrainedWidth width: CGFloat, font: UIFont, lineHeight: CGFloat = 0) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = lineHeight
+
+        let boundingBox = self.boundingRect(with: constraintRect,
+                                            options: .usesLineFragmentOrigin,
+                                            attributes: [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: style],
+                                            context: nil)
 
         return ceil(boundingBox.height)
     }
