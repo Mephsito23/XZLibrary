@@ -56,8 +56,20 @@ public struct RequestManager<API> where API: APIProtocol {
         return (data, response)
     }
 
+    public func downloadFile(urlString: String) async throws -> (URL, URLResponse)? {
+        guard let requestURL = URLRequest(urlString: urlString) else {
+            return nil
+        }
+
+        return try await downloadWithURL(url: requestURL)
+    }
+
     public func downloadFile(endpoint: API) async throws -> (URL, URLResponse) {
         let requestURL = setupRequestUrl(endpoint)
+        return try await downloadWithURL(url: requestURL)
+    }
+
+    private func downloadWithURL(url requestURL: URLRequest) async throws -> (URL, URLResponse) {
         var url: URL, response: URLResponse
         if #available(iOS 15.0, *) {
             (url, response) = try await URLSession.shared.download(for: requestURL)
