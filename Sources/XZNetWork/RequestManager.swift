@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 import MobileCoreServices
-import MyModel
+import XZModel
 import Photos
 import SwifterSwift
 import SwiftUI
