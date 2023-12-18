@@ -10,6 +10,7 @@ import SwiftUI
 import UIKit
 
 public extension View {
+    #if os(iOS)
     func hideKeyboard() {
         UIApplication.shared.sendAction(
             #selector(UIResponder.resignFirstResponder),
@@ -18,6 +19,7 @@ public extension View {
             for: nil
         )
     }
+    #endif
 
     func log(_ log: String) -> EmptyView {
         print("Log==>\(log)")

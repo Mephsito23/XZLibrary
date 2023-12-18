@@ -8,11 +8,10 @@
 import Combine
 import Foundation
 import MobileCoreServices
-import XZModel
-import Photos
 import SwifterSwift
 import SwiftUI
 import UIKit
+import XZModel
 
 public struct RequestManager<API> where API: APIProtocol {
     public init() {}
@@ -71,7 +70,7 @@ public struct RequestManager<API> where API: APIProtocol {
 
     private func downloadWithURL(url requestURL: URLRequest) async throws -> (URL, URLResponse) {
         var url: URL, response: URLResponse
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, watchOS 8.0,*) {
             (url, response) = try await URLSession.shared.download(for: requestURL)
         } else {
             (url, response) = try await URLSession.shared.download(from: requestURL)

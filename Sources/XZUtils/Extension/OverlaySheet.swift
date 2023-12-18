@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+#if os(iOS)
+
 struct OverlaySheet<Content: View>: View {
     private let isPresented: Binding<Bool>
     private let makeContent: () -> Content
@@ -36,7 +38,7 @@ struct OverlaySheet<Content: View>: View {
             }
             .onEnded { state in
                 if state.translation.height > 250 {
-                    self.isPresented.wrappedValue = false
+                    isPresented.wrappedValue = false
                 }
             }
     }
@@ -54,3 +56,4 @@ public extension View {
         )
     }
 }
+#endif

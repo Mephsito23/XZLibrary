@@ -8,10 +8,11 @@
 import Foundation
 import UIKit
 
+#if os(iOS)
 public extension UIApplication {
     var myKeyWindow: UIWindow? {
         // Get connected scenes
-        return UIApplication.shared.connectedScenes
+        UIApplication.shared.connectedScenes
             // Keep only active scenes, onscreen and visible to the user
             .filter { $0.activationState == .foregroundActive }
             // Keep only the first `UIWindowScene`
@@ -22,3 +23,4 @@ public extension UIApplication {
             .first(where: \.isKeyWindow)
     }
 }
+#endif
