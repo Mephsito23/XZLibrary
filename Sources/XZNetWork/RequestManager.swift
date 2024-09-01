@@ -6,12 +6,68 @@
 //
 
 import Combine
-import Foundation
 import MobileCoreServices
 import SwiftUI
 import UIKit
 import XZModel
 
+#if canImport(Foundation)
+import Foundation
+
+extension Dictionary {
+    /// SwifterSwift: JSON Data from dictionary.
+    ///
+    /// - Parameter prettify: set true to prettify data (default is false).
+    /// - Returns: optional JSON Data (if applicable).
+    func jsonData(prettify: Bool = false) -> Data? {
+        guard JSONSerialization.isValidJSONObject(self) else {
+            return nil
+        }
+        let options = (prettify == true) ? JSONSerialization.WritingOptions.prettyPrinted : JSONSerialization
+            .WritingOptions()
+        return try? JSONSerialization.data(withJSONObject: self, options: options)
+    }
+}
+
+extension URLRequest {
+    /// SwifterSwift: Create URLRequest from URL string.
+    ///
+    /// - Parameter urlString: URL string to initialize URL request from
+    init?(urlString: String) {
+        guard let url = URL(string: urlString) else { return nil }
+        self.init(url: url)
+    }
+
+    /// SwifterSwift: cURL command representation of this URL request.
+    var curlString: String {
+        guard let url = url else { return "" }
+
+        var baseCommand = "curl \(url.absoluteString)"
+        if httpMethod == "HEAD" {
+            baseCommand += " --head"
+        }
+
+        var command = [baseCommand]
+        if let method = httpMethod, method != "GET", method != "HEAD" {
+            command.append("-X \(method)")
+        }
+
+        if let headers = allHTTPHeaderFields {
+            for (key, value) in headers where key != "Cookie" {
+                command.append("-H '\(key): \(value)'")
+            }
+        }
+
+        if let data = httpBody,
+           let body = String(data: data, encoding: .utf8)
+        {
+            command.append("-d '\(body)'")
+        }
+
+        return command.joined(separator: " \\\n\t")
+    }
+}
+#endif
 
 public struct RequestManager<API> where API: APIProtocol {
     public init() {}
