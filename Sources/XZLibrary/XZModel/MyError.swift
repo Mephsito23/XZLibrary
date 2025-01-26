@@ -26,7 +26,9 @@ extension MyError: LocalizedError {
         case let .errorDesc(desc):
             return desc ?? ""
         case let .netEerrorData(data, code):
-            return "httpResponseCode=>\(code)\n" + (String(data: data, encoding: .utf8) ?? "network business error")
+            return "httpResponseCode=>\(code)\n"
+                + (String(data: data, encoding: .utf8)
+                    ?? "network business error")
         case .fileError:
             return "file Error"
         case let .networkingFailed(error):

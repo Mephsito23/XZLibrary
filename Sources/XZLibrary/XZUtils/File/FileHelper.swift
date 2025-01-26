@@ -2,16 +2,15 @@
 //  FileHelper.swift
 //  PokeMaster
 //
-//  Created by 王 巍 on 2019/08/22.
-//  Copyright © 2019 OneV's Den. All rights reserved.
 //
 
 import Foundation
-import XZModel
 
 public enum FileHelper {
     static func loadBundledJSON<T: Decodable>(file: String) -> T {
-        guard let url = Bundle.main.url(forResource: file, withExtension: "json") else {
+        guard
+            let url = Bundle.main.url(forResource: file, withExtension: "json")
+        else {
             fatalError("Resource not found: \(file)")
         }
         return try! loadJSON(from: url)
@@ -26,7 +25,11 @@ public enum FileHelper {
         from directory: FileManager.SearchPathDirectory,
         fileName: String
     ) throws -> T {
-        guard let url = FileManager.default.urls(for: directory, in: .userDomainMask).first else {
+        guard
+            let url = FileManager.default.urls(
+                for: directory, in: .userDomainMask
+            ).first
+        else {
             throw MyError.fileError
         }
         return try loadJSON(from: url.appendingPathComponent(fileName))
@@ -42,16 +45,27 @@ public enum FileHelper {
         to directory: FileManager.SearchPathDirectory,
         fileName: String
     ) throws {
-        guard let url = FileManager.default.urls(for: directory, in: .userDomainMask).first else {
+        guard
+            let url = FileManager.default.urls(
+                for: directory, in: .userDomainMask
+            ).first
+        else {
             return
         }
         try writeJSON(value, to: url.appendingPathComponent(fileName))
     }
 
-    static func delete(from directory: FileManager.SearchPathDirectory, fileName: String) throws {
-        guard let url = FileManager.default.urls(for: directory, in: .userDomainMask).first else {
+    static func delete(
+        from directory: FileManager.SearchPathDirectory, fileName: String
+    ) throws {
+        guard
+            let url = FileManager.default.urls(
+                for: directory, in: .userDomainMask
+            ).first
+        else {
             return
         }
-        try FileManager.default.removeItem(at: url.appendingPathComponent(fileName))
+        try FileManager.default.removeItem(
+            at: url.appendingPathComponent(fileName))
     }
 }

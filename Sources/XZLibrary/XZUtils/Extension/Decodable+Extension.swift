@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import XZModel
 
 public extension Decodable {
     init(data: Data, using decoder: JSONDecoder = .init()) throws {

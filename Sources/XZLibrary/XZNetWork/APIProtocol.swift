@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import XZModel
 
 public protocol APIProtocol {
     var baseURL: URL { get }
