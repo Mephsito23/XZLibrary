@@ -72,7 +72,7 @@ import UIKit
     }
 #endif
 
-public struct RequestManager<API> where API: APIProtocol {
+public struct RequestManager<API> where API: APIProtocol{
     public init() {}
 
     public func request<Item>(endpoint: API) -> AnyPublisher<Item, Error>

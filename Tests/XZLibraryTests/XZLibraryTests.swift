@@ -1,5 +1,6 @@
-@testable import XZLibrary
 import XCTest
+
+@testable import XZLibrary
 
 final class XZLibraryTests: XCTestCase {
     func testExample() throws {
