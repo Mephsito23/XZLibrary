@@ -17,7 +17,7 @@ public enum MyError: Error, Equatable {
     case netEerrorData(Data, Int)
     case fileError
     case networkingFailed(Error)
-    case decodableError
+    case decodableError(Data)
 }
 
 extension MyError: LocalizedError {
@@ -33,8 +33,9 @@ extension MyError: LocalizedError {
             return "file Error"
         case let .networkingFailed(error):
             return error.localizedDescription
-        case .decodableError:
-            return "decodable Error"
+        case let .decodableError(data):
+            let str = String(data: data, encoding: .utf8)
+            return "decodable Error, original data is:\(str)"
         }
     }
 }

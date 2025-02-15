@@ -72,7 +72,7 @@ import UIKit
     }
 #endif
 
-public struct RequestManager<API> where API: APIProtocol{
+public struct RequestManager<API> where API: APIProtocol {
     public init() {}
 
     public func request<Item>(endpoint: API) -> AnyPublisher<Item, Error>
@@ -94,8 +94,18 @@ public struct RequestManager<API> where API: APIProtocol{
             .eraseToAnyPublisher()
     }
 
+    public func requestStream(endpoint: API) async -> AsyncThrowingStream<
+        String, Error
+    > {
+        let requestURL: URLRequest = setupRequestUrl(endpoint)
+        let sseClient = SSEClient(request: requestURL)
+        let eventStream = await sseClient.start()
+        return eventStream
+    }
+
     public func requestData(endpoint: API) async throws -> (Data, URLResponse) {
-        let requestURL = setupRequestUrl(endpoint)
+
+        let requestURL: URLRequest = setupRequestUrl(endpoint)
         var data: Data
         var response: URLResponse
         if #available(iOS 15.0, *) {
