@@ -13,37 +13,37 @@ import UIKit
 #if canImport(Foundation)
     import Foundation
 
-    extension Dictionary {
+    fileprivate extension Dictionary {
         /// SwifterSwift: JSON Data from dictionary.
         ///
         /// - Parameter prettify: set true to prettify data (default is false).
         /// - Returns: optional JSON Data (if applicable).
-        fileprivate func jsonData(prettify: Bool = false) -> Data? {
+        func jsonData(prettify: Bool = false) -> Data? {
             guard JSONSerialization.isValidJSONObject(self) else {
                 return nil
             }
             let options =
                 (prettify == true)
-                ? JSONSerialization.WritingOptions.prettyPrinted
-                : JSONSerialization
+                    ? JSONSerialization.WritingOptions.prettyPrinted
+                    : JSONSerialization
                     .WritingOptions()
             return try? JSONSerialization.data(
                 withJSONObject: self, options: options)
         }
     }
 
-    extension URLRequest {
+    fileprivate extension URLRequest {
         /// SwifterSwift: Create URLRequest from URL string.
         ///
         /// - Parameter urlString: URL string to initialize URL request from
-        fileprivate init?(urlString: String) {
+        init?(urlString: String) {
             guard let url = URL(string: urlString) else { return nil }
             self.init(url: url)
         }
 
         /// SwifterSwift: cURL command representation of this URL request.
-        fileprivate var curlString: String {
-            guard let url = url else { return "" }
+        var curlString: String {
+            guard let url else { return "" }
 
             var baseCommand = "curl \(url.absoluteString)"
             if httpMethod == "HEAD" {
@@ -62,7 +62,7 @@ import UIKit
             }
 
             if let data = httpBody,
-                let body = String(data: data, encoding: .utf8)
+               let body = String(data: data, encoding: .utf8)
             {
                 command.append("-d '\(body)'")
             }
@@ -72,17 +72,18 @@ import UIKit
     }
 #endif
 
-public struct RequestManager<API>:Sendable where API: APIProtocol{
+public struct RequestManager<API>: Sendable where API: APIProtocol {
     public init() {}
 
     public func request<Item>(endpoint: API) -> AnyPublisher<Item, Error>
-    where Item: Decodable {
+        where Item: Decodable
+    {
         let requestURL = setupRequestUrl(endpoint)
         return URLSession.shared
             .dataTaskPublisher(for: requestURL)
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200
+                      httpResponse.statusCode == 200
                 else {
                     let httpResponse = response as? HTTPURLResponse
                     throw MyError.netEerrorData(
@@ -103,8 +104,9 @@ public struct RequestManager<API>:Sendable where API: APIProtocol{
         return eventStream
     }
 
-    public func requestData(endpoint: API) async throws -> (Data, URLResponse) {
 
+
+    public func requestData(endpoint: API) async throws -> (Data, URLResponse) {
         let requestURL: URLRequest = setupRequestUrl(endpoint)
         var data: Data
         var response: URLResponse
@@ -116,14 +118,14 @@ public struct RequestManager<API>:Sendable where API: APIProtocol{
         }
 
         guard let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200
+              httpResponse.statusCode == 200
         else {
             let httpResponse = response as? HTTPURLResponse
             #if DEBUG
                 let errorStr =
                     "httpResponseCode=>\(String(describing: httpResponse?.statusCode))\n"
-                    + (String(data: data, encoding: .utf8)
-                        ?? "network business error")
+                        + (String(data: data, encoding: .utf8)
+                            ?? "network business error")
                 print(errorStr)
             #endif
             throw MyError.netEerrorData(data, httpResponse?.statusCode ?? -1)
@@ -160,7 +162,7 @@ public struct RequestManager<API>:Sendable where API: APIProtocol{
         }
 
         guard let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200
+              httpResponse.statusCode == 200
         else {
             let httpResponse = response as? HTTPURLResponse
             throw MyError.errorDesc(
@@ -223,9 +225,9 @@ extension RequestManager {
 
         if endpoint.parameterEncoding == .FileEncoding {
             if let parameter = endpoint.parameters,
-                let body = parameter[kBodyKey],
-                let temp = body as? [String: Any],
-                let data = parameter[kDataKey] as? Data
+               let body = parameter[kBodyKey],
+               let temp = body as? [String: Any],
+               let data = parameter[kDataKey] as? Data
             {
                 multipartParameter(for: &requestURL, with: temp, fileData: data)
             }
@@ -244,7 +246,7 @@ extension RequestManager {
         for requestURL: inout URLRequest, with parameters: [String: Any]?,
         fileData data: Data
     ) {
-        guard let parameters = parameters else {
+        guard let parameters else {
             return
         }
 
@@ -270,9 +272,9 @@ extension RequestManager {
         let fileContent =
             "Content-Disposition: form-data; name=\"\("file")\"; filename=\"\("kindle.txt")\"\(lineBreak)"
         body.appendString(fileContent)
-        body.appendString("Content-Type: \(mimetype)\r\n\r\n")  // 文件类型
-        body.append(data)  // 文件主体
-        body.appendString(lineBreak)  // 使用\r\n来表示这个这个值的结束符
+        body.appendString("Content-Type: \(mimetype)\r\n\r\n") // 文件类型
+        body.append(data) // 文件主体
+        body.appendString(lineBreak) // 使用\r\n来表示这个这个值的结束符
 
         // --分隔线-- 为整个表单的结束符
         body.appendString("--\(boundary)--\(lineBreak)")
@@ -312,7 +314,7 @@ extension URLSession {
     func data(from url: URLRequest) async throws -> (Data, URLResponse) {
         try await withCheckedThrowingContinuation { continuation in
             let task = self.dataTask(with: url) { data, response, error in
-                guard let data = data, let response = response else {
+                guard let data, let response else {
                     let error = error ?? URLError(.badServerResponse)
                     return continuation.resume(throwing: error)
                 }
@@ -327,7 +329,7 @@ extension URLSession {
         try await withCheckedThrowingContinuation { continuation in
             let downloadTask = self.downloadTask(with: url) {
                 url, response, error in
-                guard let url = url, let response = response else {
+                guard let url, let response else {
                     let error = error ?? URLError(.badServerResponse)
                     return continuation.resume(throwing: error)
                 }

@@ -22,3 +22,7 @@ public protocol APIProtocol {
 
     var headers: [String: String]? { get }
 }
+
+public protocol ResponseProtocol {
+    
+}
