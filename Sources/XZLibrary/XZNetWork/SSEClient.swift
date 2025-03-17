@@ -11,7 +11,7 @@ public actor SSEClient {
     private var request: URLRequest
     private var task: URLSessionDataTask?
     private var session: URLSession?
-    private var delegate: SSEClientDelegate?
+    private weak var delegate: SSEClientDelegate?
 
     init(request: URLRequest) {
         self.request = request
@@ -20,11 +20,11 @@ public actor SSEClient {
     func start() -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             let sessionConfig = URLSessionConfiguration.default
-            session = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
-            request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+            let delegate = SSEClientDelegate(continuation: continuation)
+            self.delegate = delegate
+            self.session = URLSession(configuration: sessionConfig, delegate: delegate, delegateQueue: nil)
 
-            // 创建代理对象
-            delegate = SSEClientDelegate(continuation: continuation)
+            request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
             task = session?.dataTask(with: request)
             task?.resume()
 
@@ -39,6 +39,7 @@ public actor SSEClient {
     func stop() {
         task?.cancel()
         task = nil
+        session?.invalidateAndCancel()
         session = nil
         delegate = nil
         print("Connection closed.")
@@ -48,48 +49,42 @@ public actor SSEClient {
 // 创建一个继承自 NSObject 的代理类
 final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private var continuation: AsyncThrowingStream<String, Error>.Continuation
-    private var dataBuffer = Data()
+    private var buffer = ""
 
     init(continuation: AsyncThrowingStream<String, Error>.Continuation) {
         self.continuation = continuation
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        dataBuffer.append(data)
-        processBuffer()
+        if let string = String(data: data, encoding: .utf8) {
+            buffer.append(string)
+            processBuffer()
+        }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            continuation.finish(throwing: error)
+            Task { @MainActor in
+                continuation.finish(throwing: error)
+            }
         } else {
-            continuation.finish()
+            Task { @MainActor in
+                continuation.finish()
+            }
         }
     }
 
     private func processBuffer() {
-        let bufferString = String(decoding: dataBuffer, as: UTF8.self)
-        let lines = bufferString.split(separator: "\n")
+        while let lineEnd = buffer.range(of: "\n") {
+            let line = String(buffer[buffer.startIndex..<lineEnd.lowerBound])
+            buffer.removeSubrange(buffer.startIndex..<lineEnd.upperBound)
 
-        var remainingData = ""
-        for line in lines {
             if line.starts(with: "data:") {
                 let event = line.dropFirst(5).trimmingCharacters(in: .whitespacesAndNewlines)
-                remainingData += "\(event)\n"
+                Task { @MainActor in
+                    _ = continuation.yield(event)
+                }
             }
-        }
-
-        // Yield events to the stream
-        for event in remainingData.split(separator: "\n") {
-            continuation.yield(String(event))
-        }
-
-        // Update buffer with remaining incomplete data
-        if let lastLineIndex = bufferString.lastIndex(of: "\n") {
-            let remainingIndex = bufferString.index(after: lastLineIndex)
-            dataBuffer = Data(bufferString[remainingIndex...].utf8)
-        } else {
-            dataBuffer = Data()
         }
     }
 }
