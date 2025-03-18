@@ -63,7 +63,7 @@ final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Send
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
+        if let error {
             Task { @MainActor in
                 continuation.finish(throwing: error)
             }
