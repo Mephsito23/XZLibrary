@@ -25,35 +25,7 @@ public actor SSEClient {
             self.session = URLSession(configuration: sessionConfig, delegate: delegate, delegateQueue: nil)
 
             request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
-
-            task = session.dataTask(with: request) { data, _, error in
-                if let error {
-                    print("error==>\(error.localizedDescription)")
-                    continuation.finish(throwing: error)
-                    return
-                }
-
-                guard let data else {
-                    print("error==> bad server resonse")
-                    continuation.finish(throwing: URLError(.badServerResponse))
-                    return
-                }
-
-                let lines = String(decoding: data, as: UTF8.self).split(
-                    separator: "\n")
-                for line in lines {
-                    if line.starts(with: "data:") {
-                        let event = line.dropFirst(5).trimmingCharacters(
-                            in: .whitespacesAndNewlines)
-                        continuation.yield(event)
-                    } else {
-                        print("error line:\(line)")
-                    }
-                }
-
-                continuation.finish()
-            }
-
+            task = session?.dataTask(with: request)
             task?.resume()
 
             continuation.onTermination = { @Sendable _ in
