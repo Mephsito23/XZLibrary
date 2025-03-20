@@ -36,7 +36,7 @@ public actor SSEClient {
         }
     }
 
-    func stop() {
+    public func stop() async {
         task?.cancel()
         task = nil
         session?.invalidateAndCancel()

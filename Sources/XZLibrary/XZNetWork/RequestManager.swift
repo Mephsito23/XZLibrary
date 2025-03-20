@@ -95,16 +95,12 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
             .eraseToAnyPublisher()
     }
 
-    public func requestStream(endpoint: API) async -> AsyncThrowingStream<
-        String, Error
-    > {
+    public func requestStream(endpoint: API) async -> (AsyncThrowingStream<String, Error>, SSEClient) {
         let requestURL: URLRequest = setupRequestUrl(endpoint)
         let sseClient = SSEClient(request: requestURL)
         let eventStream = await sseClient.start()
-        return eventStream
+        return (eventStream, sseClient)
     }
-
-
 
     public func requestData(endpoint: API) async throws -> (Data, URLResponse) {
         let requestURL: URLRequest = setupRequestUrl(endpoint)
