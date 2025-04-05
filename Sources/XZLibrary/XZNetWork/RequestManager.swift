@@ -13,38 +13,36 @@ import UIKit
 #if canImport(Foundation)
     import Foundation
 
-    extension Dictionary {
+    fileprivate extension Dictionary {
         /// SwifterSwift: JSON Data from dictionary.
         ///
         /// - Parameter prettify: set true to prettify data (default is false).
         /// - Returns: optional JSON Data (if applicable).
-        fileprivate func jsonData(prettify: Bool = false) -> Data? {
+        func jsonData(prettify: Bool = false) -> Data? {
             guard JSONSerialization.isValidJSONObject(self) else {
                 return nil
             }
             let options =
                 (prettify == true)
-                ? JSONSerialization.WritingOptions.prettyPrinted
-                : JSONSerialization
+                    ? JSONSerialization.WritingOptions.prettyPrinted
+                    : JSONSerialization
                     .WritingOptions()
             return try? JSONSerialization.data(
-                withJSONObject: self,
-                options: options
-            )
+                withJSONObject: self, options: options)
         }
     }
 
-    extension URLRequest {
+    fileprivate extension URLRequest {
         /// SwifterSwift: Create URLRequest from URL string.
         ///
         /// - Parameter urlString: URL string to initialize URL request from
-        fileprivate init?(urlString: String) {
+        init?(urlString: String) {
             guard let url = URL(string: urlString) else { return nil }
             self.init(url: url)
         }
 
         /// SwifterSwift: cURL command representation of this URL request.
-        fileprivate var curlString: String {
+        var curlString: String {
             guard let url else { return "" }
 
             var baseCommand = "curl \(url.absoluteString)"
@@ -64,7 +62,7 @@ import UIKit
             }
 
             if let data = httpBody,
-                let body = String(data: data, encoding: .utf8)
+               let body = String(data: data, encoding: .utf8)
             {
                 command.append("-d '\(body)'")
             }
@@ -78,19 +76,18 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
     public init() {}
 
     public func request<Item>(endpoint: API) -> AnyPublisher<Item, Error>
-    where Item: Decodable {
+        where Item: Decodable
+    {
         let requestURL = setupRequestUrl(endpoint)
         return URLSession.shared
             .dataTaskPublisher(for: requestURL)
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200
+                      httpResponse.statusCode == 200
                 else {
                     let httpResponse = response as? HTTPURLResponse
                     throw MyError.netEerrorData(
-                        data,
-                        httpResponse?.statusCode ?? -1
-                    )
+                        data, httpResponse?.statusCode ?? -1)
                 }
                 return data
             }
@@ -98,18 +95,7 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
             .eraseToAnyPublisher()
     }
 
-    public func requestStream(endpoint: API) async -> AsyncThrowingStream<
-        String, Error
-    > {
-        let requestURL: URLRequest = setupRequestUrl(endpoint)
-        let sseClient = SSEClient(request: requestURL)
-        let eventStream = await sseClient.start()
-        return eventStream
-    }
-
-    public func requestStream(endpoint: API) async -> (
-        AsyncThrowingStream<String, Error>, SSEClient
-    ) {
+    public func requestStream(endpoint: API) async -> (AsyncThrowingStream<String, Error>, SSEClient) {
         let requestURL: URLRequest = setupRequestUrl(endpoint)
         let sseClient = SSEClient(request: requestURL)
         let eventStream = await sseClient.start()
@@ -124,19 +110,18 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
             (data, response) = try await URLSession.shared.data(for: requestURL)
         } else {
             (data, response) = try await URLSession.shared.data(
-                from: requestURL
-            )
+                from: requestURL)
         }
 
         guard let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200
+              httpResponse.statusCode == 200
         else {
             let httpResponse = response as? HTTPURLResponse
             #if DEBUG
                 let errorStr =
                     "httpResponseCode=>\(String(describing: httpResponse?.statusCode))\n"
-                    + (String(data: data, encoding: .utf8)
-                        ?? "network business error")
+                        + (String(data: data, encoding: .utf8)
+                            ?? "network business error")
                 print(errorStr)
             #endif
             throw MyError.netEerrorData(data, httpResponse?.statusCode ?? -1)
@@ -166,21 +151,18 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
         var response: URLResponse
         if #available(iOS 15.0, watchOS 8.0, *) {
             (url, response) = try await URLSession.shared.download(
-                for: requestURL
-            )
+                for: requestURL)
         } else {
             (url, response) = try await URLSession.shared.download(
-                from: requestURL
-            )
+                from: requestURL)
         }
 
         guard let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200
+              httpResponse.statusCode == 200
         else {
             let httpResponse = response as? HTTPURLResponse
             throw MyError.errorDesc(
-                "network error:\(httpResponse?.statusCode ?? -1)"
-            )
+                "network error:\(httpResponse?.statusCode ?? -1)")
         }
 
         let locationPath = url.path
@@ -190,17 +172,12 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
         }
         let fm = FileManager.default
         let documentUrl = try fm.url(
-            for: .documentDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: false
-        )
+            for: .documentDirectory, in: .userDomainMask, appropriateFor: nil,
+            create: false)
         let downloadURL = documentUrl.appendingPathComponent("TimeDownload")
         if !fm.fileExists(atPath: downloadURL.path) {
             try fm.createDirectory(
-                at: downloadURL,
-                withIntermediateDirectories: true
-            )
+                at: downloadURL, withIntermediateDirectories: true)
         }
 
         let filePath = downloadURL.path + "/" + fileName
@@ -218,9 +195,7 @@ extension RequestManager {
     private func setupRequestUrl(_ endpoint: API) -> URLRequest {
         let queryURL = endpoint.baseURL.appendingPathComponent(endpoint.path)
         var components = URLComponents(
-            url: queryURL,
-            resolvingAgainstBaseURL: true
-        )!
+            url: queryURL, resolvingAgainstBaseURL: true)!
         components.queryItems = [URLQueryItem]()
 
         if endpoint.parameterEncoding == .URLEncoding {
@@ -233,8 +208,7 @@ extension RequestManager {
 
                     let queryValue = "\(value.value)"
                     components.queryItems?.append(
-                        URLQueryItem(name: value.key, value: queryValue)
-                    )
+                        URLQueryItem(name: value.key, value: queryValue))
                 }
             }
         }
@@ -247,9 +221,9 @@ extension RequestManager {
 
         if endpoint.parameterEncoding == .FileEncoding {
             if let parameter = endpoint.parameters,
-                let body = parameter[kBodyKey],
-                let temp = body as? [String: Any],
-                let data = parameter[kDataKey] as? Data
+               let body = parameter[kBodyKey],
+               let temp = body as? [String: Any],
+               let data = parameter[kDataKey] as? Data
             {
                 multipartParameter(for: &requestURL, with: temp, fileData: data)
             }
@@ -265,8 +239,7 @@ extension RequestManager {
     }
 
     private func multipartParameter(
-        for requestURL: inout URLRequest,
-        with parameters: [String: Any]?,
+        for requestURL: inout URLRequest, with parameters: [String: Any]?,
         fileData data: Data
     ) {
         guard let parameters else {
@@ -277,8 +250,7 @@ extension RequestManager {
         let lineBreak = "\r\n"
         requestURL.setValue(
             "multipart/form-data; boundary=\(boundary)",
-            forHTTPHeaderField: "Content-Type"
-        )
+            forHTTPHeaderField: "Content-Type")
 
         var body = Data()
         // 添加普通参数数据
@@ -286,8 +258,7 @@ extension RequestManager {
             // 数据之前要用 --分隔线 来隔开 ，否则后台会解析失败
             body.appendString("--\(boundary)\(lineBreak)")
             body.appendString(
-                "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n"
-            )
+                "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
             body.appendString("\(value)\(lineBreak)")
         }
 
@@ -297,9 +268,9 @@ extension RequestManager {
         let fileContent =
             "Content-Disposition: form-data; name=\"\("file")\"; filename=\"\("kindle.txt")\"\(lineBreak)"
         body.appendString(fileContent)
-        body.appendString("Content-Type: \(mimetype)\r\n\r\n")  // 文件类型
-        body.append(data)  // 文件主体
-        body.appendString(lineBreak)  // 使用\r\n来表示这个这个值的结束符
+        body.appendString("Content-Type: \(mimetype)\r\n\r\n") // 文件类型
+        body.append(data) // 文件主体
+        body.appendString(lineBreak) // 使用\r\n来表示这个这个值的结束符
 
         // --分隔线-- 为整个表单的结束符
         body.appendString("--\(boundary)--\(lineBreak)")
@@ -312,13 +283,12 @@ extension RequestManager {
         if let uti = UTTypeCreatePreferredIdentifierForTag(
             kUTTagClassFilenameExtension,
             pathExtension as NSString,
-            nil
-        )?.takeRetainedValue() {
+            nil)?.takeRetainedValue()
+        {
             if let mimetype = UTTypeCopyPreferredTagWithClass(
-                uti,
-                kUTTagClassMIMEType
-            )?
-            .takeRetainedValue() {
+                uti, kUTTagClassMIMEType)?
+                .takeRetainedValue()
+            {
                 return mimetype as String
             }
         }
@@ -354,9 +324,7 @@ extension URLSession {
     func download(from url: URLRequest) async throws -> (URL, URLResponse) {
         try await withCheckedThrowingContinuation { continuation in
             let downloadTask = self.downloadTask(with: url) {
-                url,
-                response,
-                error in
+                url, response, error in
                 guard let url, let response else {
                     let error = error ?? URLError(.badServerResponse)
                     return continuation.resume(throwing: error)
