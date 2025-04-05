@@ -10,7 +10,7 @@ import Foundation
 public extension Decodable {
     init(data: Data, using decoder: JSONDecoder = .init()) throws {
         guard let parsed = try? decoder.decode(Self.self, from: data) else {
-            throw MyError.decodableError(data)
+            throw XZError.decodableError(data)
         }
         self = parsed
     }

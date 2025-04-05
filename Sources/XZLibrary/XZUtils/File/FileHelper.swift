@@ -30,7 +30,7 @@ public enum FileHelper {
                 for: directory, in: .userDomainMask
             ).first
         else {
-            throw MyError.fileError
+            throw XZError.fileError
         }
         return try loadJSON(from: url.appendingPathComponent(fileName))
     }

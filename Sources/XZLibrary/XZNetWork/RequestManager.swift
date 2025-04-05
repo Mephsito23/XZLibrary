@@ -87,7 +87,7 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
                     httpResponse.statusCode == 200
                 else {
                     let httpResponse = response as? HTTPURLResponse
-                    throw MyError.netEerrorData(
+                    throw XZError.netEerrorData(
                         data,
                         httpResponse?.statusCode ?? -1
                     )
@@ -130,7 +130,7 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
                         ?? "network business error")
                 print(errorStr)
             #endif
-            throw MyError.netEerrorData(data, httpResponse?.statusCode ?? -1)
+            throw XZError.netEerrorData(data, httpResponse?.statusCode ?? -1)
         }
         return (data, response)
     }
@@ -169,7 +169,7 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
             httpResponse.statusCode == 200
         else {
             let httpResponse = response as? HTTPURLResponse
-            throw MyError.errorDesc(
+            throw XZError.errorDesc(
                 "network error:\(httpResponse?.statusCode ?? -1)"
             )
         }
@@ -177,7 +177,7 @@ public struct RequestManager<API>: Sendable where API: APIProtocol {
         let locationPath = url.path
         let fileName = response.suggestedFilename ?? ""
         guard locationPath != "", fileName != "" else {
-            throw MyError.errorDesc("path or fileName is nil")
+            throw XZError.errorDesc("path or fileName is nil")
         }
         let fm = FileManager.default
         let documentUrl = try fm.url(
