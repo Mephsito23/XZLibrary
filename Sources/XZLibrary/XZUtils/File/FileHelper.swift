@@ -27,7 +27,8 @@ public enum FileHelper {
     ) throws -> T {
         guard
             let url = FileManager.default.urls(
-                for: directory, in: .userDomainMask
+                for: directory,
+                in: .userDomainMask
             ).first
         else {
             throw XZError.fileError
@@ -47,7 +48,8 @@ public enum FileHelper {
     ) throws {
         guard
             let url = FileManager.default.urls(
-                for: directory, in: .userDomainMask
+                for: directory,
+                in: .userDomainMask
             ).first
         else {
             return
@@ -56,16 +58,19 @@ public enum FileHelper {
     }
 
     static func delete(
-        from directory: FileManager.SearchPathDirectory, fileName: String
+        from directory: FileManager.SearchPathDirectory,
+        fileName: String
     ) throws {
         guard
             let url = FileManager.default.urls(
-                for: directory, in: .userDomainMask
+                for: directory,
+                in: .userDomainMask
             ).first
         else {
             return
         }
         try FileManager.default.removeItem(
-            at: url.appendingPathComponent(fileName))
+            at: url.appendingPathComponent(fileName)
+        )
     }
 }

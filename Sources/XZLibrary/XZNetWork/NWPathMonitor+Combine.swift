@@ -85,11 +85,14 @@ extension NWPathMonitor {
     }
 
     // 4
-    public func publisher(queue: DispatchQueue)
+    public func publisher(
+        queue: DispatchQueue
+    )
         -> NWPathMonitor.NetworkStatusPublisher
     {
         return NetworkStatusPublisher(
             monitor: self,
-            queue: queue)
+            queue: queue
+        )
     }
 }

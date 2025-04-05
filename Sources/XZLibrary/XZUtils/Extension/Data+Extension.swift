@@ -22,8 +22,10 @@ extension Data {
                 {
                     let messageLength = CC_LONG(self.count)
                     CC_SHA256(
-                        messageBytesBaseAddress, messageLength,
-                        digestBytesBaseAddress)
+                        messageBytesBaseAddress,
+                        messageLength,
+                        digestBytesBaseAddress
+                    )
                 }
                 return 0
             }
