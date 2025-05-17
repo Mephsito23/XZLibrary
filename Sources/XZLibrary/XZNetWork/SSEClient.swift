@@ -80,9 +80,10 @@ final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Send
             buffer.removeSubrange(buffer.startIndex..<lineEnd.upperBound)
 
             if line.starts(with: "data:") {
-                let event = line.dropFirst(5).trimmingCharacters(in: .whitespacesAndNewlines)
+                let event = line.dropFirst(5).trimmingCharacters(in: .whitespaces)
                 Task { @MainActor in
-                    _ = continuation.yield(event)
+                    let str = event.replacingOccurrences(of: "\\n", with: "\n")
+                    _ = continuation.yield(str)
                 }
             }
         }
