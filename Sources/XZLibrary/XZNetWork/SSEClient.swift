@@ -48,27 +48,39 @@ public actor SSEClient {
 
 // 创建一个继承自 NSObject 的代理类
 final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
-    private var continuation: AsyncThrowingStream<String, Error>.Continuation
+    var continuation: AsyncThrowingStream<String, Error>.Continuation
     private var buffer = ""
+    private var errorData: Data?
 
     init(continuation: AsyncThrowingStream<String, Error>.Continuation) {
         self.continuation = continuation
     }
 
+    @MainActor
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        if let httpResponse = dataTask.response as? HTTPURLResponse,
+            !(200...299).contains(httpResponse.statusCode)
+        {
+            errorData = data  // 缓存非 2xx 响应的数据
+            return
+        }
+
         if let string = String(data: data, encoding: .utf8) {
             buffer.append(string)
             processBuffer()
         }
     }
 
+    @MainActor
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error {
-            Task { @MainActor in
+        Task {
+            if let error {
                 continuation.finish(throwing: error)
-            }
-        } else {
-            Task { @MainActor in
+            } else if let errorData {
+                let resError = XZError.netEerrorData(errorData, (task.response as? HTTPURLResponse)?.statusCode ?? -1)
+                print("Connection closed with error==>\(resError.localizedDescription)")
+                continuation.finish(throwing: resError)
+            } else {
                 continuation.finish()
             }
         }
