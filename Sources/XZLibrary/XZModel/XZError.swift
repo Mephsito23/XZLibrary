@@ -17,7 +17,7 @@ public enum XZError: Error, Equatable {
     case netEerrorData(Data, Int)
     case fileError
     case networkingFailed(Error)
-    case decodableError(Data)
+    case decodableError(Data, String)
 }
 
 extension XZError: LocalizedError {
@@ -34,9 +34,9 @@ extension XZError: LocalizedError {
             return "file Error"
         case let .networkingFailed(error):
             return error.localizedDescription
-        case let .decodableError(data):
-            let str = String(data: data, encoding: .utf8)
-            return "decodable Error, original data is:\(str)"
+        case .decodableError(let data, let desc):
+//            let str = String(data: data, encoding: .utf8)
+            return desc
         }
     }
 }
