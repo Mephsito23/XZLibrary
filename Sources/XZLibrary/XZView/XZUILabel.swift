@@ -163,6 +163,7 @@ class XZUILabel: UILabel {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.minimumLineHeight = lineHeight
         paragraphStyle.maximumLineHeight = lineHeight
+        paragraphStyle.alignment = self.textAlignment
 
         var attributes: [NSAttributedString.Key: Any] = existingAttributes ?? [:]
         attributes[.paragraphStyle] = paragraphStyle
