@@ -60,3 +60,14 @@ public extension Color {
         )
     }
 }
+
+extension UIColor {
+    var xz_alpha: CGFloat {
+        var a: CGFloat = 0
+        if getRed(nil, green: nil, blue: nil, alpha: &a) {
+            return a
+        }
+        return 0
+    }
+
+}
