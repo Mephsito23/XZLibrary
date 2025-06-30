@@ -15,9 +15,7 @@ let CGContextInspectContext: (CGContext) -> Void = {
 }
 #else
 let CGContextInspectContext: (CGContext) -> Void = {
-    if !QMUIHelper.inspectContextIfInvalidatedInReleaseMode(context: $0) {
-        return
-    }
+    XZUIHelper.inspectContextIfInvalidatedInDebugMode(context: $0)
 }
 #endif
 
