@@ -15,7 +15,9 @@ let CGContextInspectContext: (CGContext) -> Void = {
 }
 #else
 let CGContextInspectContext: (CGContext) -> Void = {
-    XZUIHelper.inspectContextIfInvalidatedInDebugMode(context: $0)
+    if !XZUIHelper.inspectContextIfInvalidatedInReleaseMode(context: $0) {
+        return
+    }
 }
 #endif
 
@@ -615,7 +617,7 @@ extension UIImage {
         var resultImage: UIImage?
         let color = color ?? UIColor.clear
         
-        let opaque = (cornerRadius == 0.0 && color.xz_alpha == 1.0)
+        let opaque = (cornerRadius == 0.0 && color.alpha == 1.0)
         UIGraphicsBeginImageContextWithOptions(size, opaque, 0)
         guard let context = UIGraphicsGetCurrentContext() else { return nil }
         CGContextInspectContext(context)
