@@ -385,7 +385,8 @@ public extension Date {
     var nearestFiveMinutes: Date {
         var components = calendar.dateComponents(
             [.year, .month, .day, .hour, .minute, .second, .nanosecond],
-            from: self)
+            from: self
+        )
         let min = components.minute!
         components.minute! = min % 5 < 3 ? min - min % 5 : min + 5 - (min % 5)
         components.second = 0
@@ -405,7 +406,8 @@ public extension Date {
     var nearestTenMinutes: Date {
         var components = calendar.dateComponents(
             [.year, .month, .day, .hour, .minute, .second, .nanosecond],
-            from: self)
+            from: self
+        )
         let min = components.minute!
         components.minute? = min % 10 < 5 ? min - min % 10 : min + 10 - (min % 10)
         components.second = 0
@@ -425,7 +427,8 @@ public extension Date {
     var nearestQuarterHour: Date {
         var components = calendar.dateComponents(
             [.year, .month, .day, .hour, .minute, .second, .nanosecond],
-            from: self)
+            from: self
+        )
         let min = components.minute!
         components.minute! = min % 15 < 8 ? min - min % 15 : min + 15 - (min % 15)
         components.second = 0
@@ -445,7 +448,8 @@ public extension Date {
     var nearestHalfHour: Date {
         var components = calendar.dateComponents(
             [.year, .month, .day, .hour, .minute, .second, .nanosecond],
-            from: self)
+            from: self
+        )
         let min = components.minute!
         components.minute! = min % 30 < 15 ? min - min % 30 : min + 30 - (min % 30)
         components.second = 0
@@ -670,22 +674,28 @@ public extension Date {
         switch component {
         case .second:
             var date = adding(.second, value: 1)
-            date = calendar.date(from:
-                calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date))!
+            date = calendar.date(
+                from:
+                    calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            )!
             date.add(.second, value: -1)
             return date
 
         case .minute:
             var date = adding(.minute, value: 1)
-            let after = calendar.date(from:
-                calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date))!
+            let after = calendar.date(
+                from:
+                    calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+            )!
             date = after.adding(.second, value: -1)
             return date
 
         case .hour:
             var date = adding(.hour, value: 1)
-            let after = calendar.date(from:
-                calendar.dateComponents([.year, .month, .day, .hour], from: date))!
+            let after = calendar.date(
+                from:
+                    calendar.dateComponents([.year, .month, .day, .hour], from: date)
+            )!
             date = after.adding(.second, value: -1)
             return date
 
@@ -697,22 +707,28 @@ public extension Date {
 
         case .weekOfYear, .weekOfMonth:
             var date = self
-            let beginningOfWeek = calendar.date(from:
-                calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
+            let beginningOfWeek = calendar.date(
+                from:
+                    calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+            )!
             date = beginningOfWeek.adding(.day, value: 7).adding(.second, value: -1)
             return date
 
         case .month:
             var date = adding(.month, value: 1)
-            let after = calendar.date(from:
-                calendar.dateComponents([.year, .month], from: date))!
+            let after = calendar.date(
+                from:
+                    calendar.dateComponents([.year, .month], from: date)
+            )!
             date = after.adding(.second, value: -1)
             return date
 
         case .year:
             var date = adding(.year, value: 1)
-            let after = calendar.date(from:
-                calendar.dateComponents([.year], from: date))!
+            let after = calendar.date(
+                from:
+                    calendar.dateComponents([.year], from: date)
+            )!
             date = after.adding(.second, value: -1)
             return date
 
@@ -911,10 +927,15 @@ public extension Date {
     /// - Parameter range: The range in which to create a random date. `range` must not be empty.
     /// - Returns: A random date within the bounds of `range`.
     static func random(in range: Range<Date>) -> Date {
-        return Date(timeIntervalSinceReferenceDate:
-            TimeInterval
-                .random(in: range.lowerBound.timeIntervalSinceReferenceDate..<range.upperBound
-                    .timeIntervalSinceReferenceDate))
+        return Date(
+            timeIntervalSinceReferenceDate:
+                TimeInterval
+                .random(
+                    in: range.lowerBound
+                        .timeIntervalSinceReferenceDate..<range.upperBound
+                        .timeIntervalSinceReferenceDate
+                )
+        )
     }
 
     /// SwifterSwift: Returns a random date within the specified range.
@@ -922,10 +943,15 @@ public extension Date {
     /// - Parameter range: The range in which to create a random date.
     /// - Returns: A random date within the bounds of `range`.
     static func random(in range: ClosedRange<Date>) -> Date {
-        return Date(timeIntervalSinceReferenceDate:
-            TimeInterval
-                .random(in: range.lowerBound.timeIntervalSinceReferenceDate...range.upperBound
-                    .timeIntervalSinceReferenceDate))
+        return Date(
+            timeIntervalSinceReferenceDate:
+                TimeInterval
+                .random(
+                    in: range.lowerBound
+                        .timeIntervalSinceReferenceDate...range.upperBound
+                        .timeIntervalSinceReferenceDate
+                )
+        )
     }
 
     /// SwifterSwift: Returns a random date within the specified range, using the given generator as a source for
@@ -936,10 +962,14 @@ public extension Date {
     ///   - generator: The random number generator to use when creating the new random date.
     /// - Returns: A random date within the bounds of `range`.
     static func random(in range: Range<Date>, using generator: inout some RandomNumberGenerator) -> Date {
-        return Date(timeIntervalSinceReferenceDate:
-            TimeInterval.random(
-                in: range.lowerBound.timeIntervalSinceReferenceDate..<range.upperBound.timeIntervalSinceReferenceDate,
-                using: &generator))
+        return Date(
+            timeIntervalSinceReferenceDate:
+                TimeInterval.random(
+                    in: range.lowerBound
+                        .timeIntervalSinceReferenceDate..<range.upperBound.timeIntervalSinceReferenceDate,
+                    using: &generator
+                )
+        )
     }
 
     /// SwifterSwift: Returns a random date within the specified range, using the given generator as a source for
@@ -950,10 +980,14 @@ public extension Date {
     ///   - generator: The random number generator to use when creating the new random date.
     /// - Returns: A random date within the bounds of `range`.
     static func random(in range: ClosedRange<Date>, using generator: inout some RandomNumberGenerator) -> Date {
-        return Date(timeIntervalSinceReferenceDate:
-            TimeInterval.random(
-                in: range.lowerBound.timeIntervalSinceReferenceDate...range.upperBound.timeIntervalSinceReferenceDate,
-                using: &generator))
+        return Date(
+            timeIntervalSinceReferenceDate:
+                TimeInterval.random(
+                    in: range.lowerBound
+                        .timeIntervalSinceReferenceDate...range.upperBound.timeIntervalSinceReferenceDate,
+                    using: &generator
+                )
+        )
     }
 }
 
@@ -985,7 +1019,8 @@ public extension Date {
         hour: Int? = Date().hour,
         minute: Int? = Date().minute,
         second: Int? = Date().second,
-        nanosecond: Int? = Date().nanosecond) {
+        nanosecond: Int? = Date().nanosecond
+    ) {
         var components = DateComponents()
         components.calendar = calendar
         components.timeZone = timeZone
