@@ -8,19 +8,10 @@
 import Foundation
 import UIKit
 
-func hideKeyboard() {
-    DispatchQueue.main.async {
-        UIApplication.shared.sendAction(
-            #selector(UIResponder.resignFirstResponder),
-            to: nil,
-            from: nil,
-            for: nil
-        )
-    }
 
-}
 
 extension UIView {
+
     func takeScreenshot() -> UIImage? {
         let renderer = UIGraphicsImageRenderer(size: self.bounds.size)
         return renderer.image { ctx in
@@ -106,5 +97,3 @@ extension UIView {
     }
 
 }
-
-
