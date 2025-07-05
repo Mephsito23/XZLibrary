@@ -36,7 +36,7 @@ public actor SSEClient {
         }
     }
 
-    public func stop() async {
+    func stop() async {
         task?.cancel()
         task = nil
         session?.invalidateAndCancel()
@@ -48,15 +48,15 @@ public actor SSEClient {
 
 // 创建一个继承自 NSObject 的代理类
 final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
-    var continuation: AsyncThrowingStream<String, Error>.Continuation
-    private var buffer = ""
+    private var continuation: AsyncThrowingStream<String, Error>.Continuation
     private var errorData: Data?
+    private var buffer = ""
+    private var rawDataBuffer = Data()
 
     init(continuation: AsyncThrowingStream<String, Error>.Continuation) {
         self.continuation = continuation
     }
 
-    @MainActor
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if let httpResponse = dataTask.response as? HTTPURLResponse,
             !(200...299).contains(httpResponse.statusCode)
@@ -64,25 +64,34 @@ final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Send
             errorData = data  // 缓存非 2xx 响应的数据
             return
         }
+        parseBuffer(for: data)
+    }
 
-        if let string = String(data: data, encoding: .utf8) {
-            buffer.append(string)
-            processBuffer()
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        Task { @MainActor in
+            if let error {
+                continuation.finish(throwing: error)
+                return
+            }
+
+            if let errorData = errorData {
+                let statusCode = (task.response as? HTTPURLResponse)?.statusCode ?? -1
+                let serverError = XZError.netEerrorData(errorData, statusCode)
+                print("statusCode==>\(serverError.localizedDescription)")
+                continuation.finish(throwing: serverError)
+                return
+            }
+            continuation.finish()
         }
     }
 
-    @MainActor
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        Task {
-            if let error {
-                continuation.finish(throwing: error)
-            } else if let errorData {
-                let resError = XZError.netEerrorData(errorData, (task.response as? HTTPURLResponse)?.statusCode ?? -1)
-                print("Connection closed with error==>\(resError.localizedDescription)")
-                continuation.finish(throwing: resError)
-            } else {
-                continuation.finish()
-            }
+    private func parseBuffer(for data: Data) {
+        rawDataBuffer.append(data)
+        if let string = String(data: rawDataBuffer, encoding: .utf8) {
+            rawDataBuffer.removeAll()
+            print("SSE RECEIVE DATA:  \(string)")
+            buffer.append(string)
+            processBuffer()
         }
     }
 
@@ -92,10 +101,9 @@ final class SSEClientDelegate: NSObject, URLSessionDataDelegate, @unchecked Send
             buffer.removeSubrange(buffer.startIndex..<lineEnd.upperBound)
 
             if line.starts(with: "data:") {
-                let event = line.dropFirst(5).trimmingCharacters(in: .whitespaces)
+                let event = line.dropFirst(5).trimmingCharacters(in: .whitespacesAndNewlines)
                 Task { @MainActor in
-                    let str = event.replacingOccurrences(of: "\\n", with: "\n")
-                    _ = continuation.yield(str)
+                    _ = continuation.yield(event)
                 }
             }
         }
