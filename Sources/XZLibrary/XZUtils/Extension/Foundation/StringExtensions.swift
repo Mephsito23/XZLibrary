@@ -982,6 +982,7 @@ public extension String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = locale
         dateFormatter.dateFormat = format
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         return dateFormatter.date(from: self)
     }
     #endif
