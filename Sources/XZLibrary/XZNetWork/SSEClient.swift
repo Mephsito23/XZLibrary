@@ -13,7 +13,7 @@ public actor SSEClient {
     private var session: URLSession?
     private weak var delegate: SSEClientDelegate?
 
-    init(request: URLRequest) {
+    public init(request: URLRequest) {
         self.request = request
     }
 
