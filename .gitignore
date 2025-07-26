@@ -7,3 +7,4 @@ DerivedData/
 *.xcframework
 Packages/*/.build
 */*/.swiftpm/*
+.build
