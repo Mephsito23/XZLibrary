@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(swift build)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(mv:*)",
+      "Bash(chmod:*)",
+      "Bash(./Scripts/build-all.sh:*)",
+      "Bash(swift package:*)",
+      "Bash(./Scripts/test-all.sh:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}
