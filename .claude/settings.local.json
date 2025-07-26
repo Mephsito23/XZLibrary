@@ -11,7 +11,10 @@
       "Bash(./Scripts/build-all.sh:*)",
       "Bash(swift package:*)",
       "Bash(./Scripts/test-all.sh:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(open Packages/XZCore)",
+      "Bash(open XZLibrary.xcworkspace)",
+      "Bash(swift run:*)"
     ],
     "deny": []
   }
