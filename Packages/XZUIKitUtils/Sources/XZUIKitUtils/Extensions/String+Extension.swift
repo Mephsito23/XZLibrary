@@ -103,10 +103,6 @@ extension String {
         }
     }
 
-    func money(_ digits: Int = 4) -> String {
-        return self.double()?.money(digits) ?? self
-    }
-
     /// 获取数字字符串小数点位数
     /// - Returns: 返回小数点个数
     func getDecimalPlacesByString() -> Int {

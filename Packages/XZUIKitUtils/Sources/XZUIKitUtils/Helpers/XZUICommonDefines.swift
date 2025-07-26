@@ -322,7 +322,7 @@ let CGRectFlat: (CGFloat, CGFloat, CGFloat, CGFloat) -> CGRect = { x, y, w, h in
     CGRect(x: flat(x), y: flat(y), width: flat(w), height: flat(h))
 }
 
-extension CGRect {
+public extension CGRect {
     /// 通过 size 获取一个 x/y 为 0 的 CGRect
     static func rect(size: CGSize) -> CGRect {
         return CGRect(x: 0, y: 0, width: size.width, height: size.height)
@@ -551,7 +551,7 @@ extension CGSize {
 
 // MARK: - UIEdgeInsets
 
-extension UIEdgeInsets {
+public extension UIEdgeInsets {
     /// 获取UIEdgeInsets在水平方向上的值
     var horizontalValue: CGFloat {
         return left + right

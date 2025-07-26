@@ -5,6 +5,7 @@
 //  Created by Mephisto on 2025/4/17.
 //
 import UIKit
+import XZUIKitUtils
 
 /**
  * `XZUILabel` 是一个增强版的 UILabel，提供以下功能：

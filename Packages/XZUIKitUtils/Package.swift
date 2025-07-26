@@ -7,7 +7,6 @@ let package = Package(
     name: "XZUIKitUtils",
     platforms: [
         .iOS(.v15),
-        .tvOS(.v15)
     ],
     products: [
         .library(
@@ -17,12 +16,11 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../XZCore"),
-        .package(path: "../XZFoundationUtils")
     ],
     targets: [
         .target(
             name: "XZUIKitUtils",
-            dependencies: ["XZCore", "XZFoundationUtils"]
+            dependencies: ["XZCore"]
         ),
         .testTarget(
             name: "XZUIKitUtilsTests",
