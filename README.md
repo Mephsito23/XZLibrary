@@ -17,10 +17,7 @@ XZLibrary/
 ├── Packages/                     # 所有Swift包
 │   ├── XZCore/                  # 核心包 - 基础功能
 │   ├── XZNetworking/            # 网络包 - HTTP请求和SSE
-│   ├── XZFileUtils/             # 文件工具包 - 文件操作
-│   ├── XZFoundationUtils/       # Foundation工具包 - 高级扩展
 │   ├── XZUIKitUtils/            # iOS UI工具包 - UIKit扩展
-│   ├── XZAppKitUtils/           # macOS UI工具包 - AppKit扩展
 │   └── XZUIComponents/          # UI组件包 - 自定义组件
 ├── .github/                     # CI/CD配置
 │   └── workflows/
@@ -58,31 +55,6 @@ import XZCore
 import XZNetworking
 ```
 
-### 📁 XZFileUtils (文件工具包)
-**平台支持**: iOS 15+, macOS 12+, watchOS 8+, tvOS 15+  
-**依赖**: XZCore
-
-**包含功能**:
-- `FileHelper`: 文件操作工具类
-- `FileStorage`: 基于Property Wrapper的文件存储
-
-```swift
-import XZFileUtils
-```
-
-### 🛠️ XZFoundationUtils (Foundation工具包)
-**平台支持**: iOS 15+, macOS 12+, watchOS 8+, tvOS 15+  
-**依赖**: XZCore
-
-**包含功能**:
-- 高级Foundation扩展
-- 数据处理和验证工具
-- 格式化工具
-
-```swift
-import XZFoundationUtils
-```
-
 ### 📱 XZUIKitUtils (iOS UI工具包)
 **平台支持**: iOS 15+, tvOS 15+  
 **依赖**: XZCore, XZFoundationUtils
@@ -94,18 +66,6 @@ import XZFoundationUtils
 
 ```swift
 import XZUIKitUtils
-```
-
-### 🖥️ XZAppKitUtils (macOS UI工具包)
-**平台支持**: macOS 12+  
-**依赖**: XZCore, XZFoundationUtils
-
-**包含功能**:
-- AppKit扩展
-- macOS特定的UI工具
-
-```swift
-import XZAppKitUtils
 ```
 
 ### 🎨 XZUIComponents (UI组件包)
@@ -164,11 +124,8 @@ let package = Package(
 ```
 XZCore (基础包)
 ├── XZNetworking (网络)
-├── XZFoundationUtils (Foundation工具)
-├── XZFileUtils (文件工具)
 ├── XZUIKitUtils (iOS UI工具)
 │   └── XZUIComponents (UI组件)
-└── XZAppKitUtils (macOS UI工具)
 ```
 
 ## 🧪 构建和测试
@@ -185,8 +142,6 @@ cd Packages/XZCore && swift test
 # 构建网络包
 cd Packages/XZNetworking && swift build && swift test
 
-# 构建文件工具包
-cd Packages/XZFileUtils && swift build && swift test
 ```
 
 ### 批量构建脚本
@@ -203,10 +158,7 @@ cd Packages/XZFileUtils && swift build && swift test
 
 - ✅ **XZCore**: 完成迁移和测试
 - ✅ **XZNetworking**: 完成迁移和测试  
-- ✅ **XZFileUtils**: 完成迁移和测试
-- 🔄 **XZFoundationUtils**: 结构已创建，待迁移代码
-- 🔄 **XZUIKitUtils**: 结构已创建，待迁移代码
-- 🔄 **XZAppKitUtils**: 结构已创建，待迁移代码
+-  **XZUIKitUtils**: 结构已创建，待迁移代码
 - 🔄 **XZUIComponents**: 结构已创建，待迁移代码
 
 ## 🤝 贡献指南
