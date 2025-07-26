@@ -5,6 +5,8 @@
 //  Created by Mephisto on 2025/6/3.
 //
 
+#if os(iOS)
+
 import Foundation
 import UIKit
 
@@ -34,3 +36,5 @@ extension UIScrollView {
         return image
     }
 }
+
+#endif

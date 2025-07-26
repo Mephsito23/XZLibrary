@@ -5,6 +5,8 @@
 //  Created by 伯驹 黄 on 2017/2/9.
 //  Copyright © 2017年 伯驹 黄. All rights reserved.
 //
+
+#if os(iOS)
 import AVFAudio
 import UIKit
 
@@ -505,3 +507,4 @@ public func hideKeyboard() {
         )
     }
 }
+#endif

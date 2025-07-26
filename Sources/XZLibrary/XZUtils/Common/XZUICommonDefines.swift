@@ -17,6 +17,8 @@ let IS_DEBUG = true
 let IS_DEBUG = false
 #endif
 
+#if os(iOS)
+
 // 设备类型
 let IS_IPAD = XZUIHelper.isIPad
 let IS_IPAD_PRO = XZUIHelper.isIPadPro
@@ -600,3 +602,5 @@ extension NSRange {
         return false
     }
 }
+
+#endif

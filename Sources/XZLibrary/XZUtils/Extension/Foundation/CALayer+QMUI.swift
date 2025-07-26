@@ -6,6 +6,8 @@
 //  Copyright © 2017年 伯驹 黄. All rights reserved.
 //
 
+#if os(iOS)
+
 import QuartzCore
 import UIKit
 
@@ -91,7 +93,7 @@ extension CALayer {
 
         self.actions = actions
     }
-    
+
     /**
      * 生成虚线的方法，注意返回的是 CAShapeLayer
      * @param lineLength   每一段的线宽
@@ -101,14 +103,20 @@ extension CALayer {
      * @param isHorizontal 是否横向，因为画虚线的缘故，需要指定横向或纵向，横向是 YES，纵向是 NO。
      * 注意：暂不支持 dashPhase 和 dashPattens 数组设置，因为这些都定制性太强，如果用到则自己调用系统方法即可。
      */
-    static func qmui_seperatorDashLayer(_ lineLength: Int, lineSpacing: Int, lineWidth: CGFloat, lineColor: CGColor, isHorizontal: Bool) -> CAShapeLayer {
+    static func qmui_seperatorDashLayer(
+        _ lineLength: Int,
+        lineSpacing: Int,
+        lineWidth: CGFloat,
+        lineColor: CGColor,
+        isHorizontal: Bool
+    ) -> CAShapeLayer {
         let layer = CAShapeLayer()
         layer.fillColor = UIColor.clear.cgColor
         layer.strokeColor = lineColor
         layer.lineWidth = lineWidth
         layer.lineDashPattern = [NSNumber(integerLiteral: lineLength), NSNumber(value: lineSpacing)]
         layer.masksToBounds = true
-        
+
         let path = CGMutablePath()
         if isHorizontal {
             path.move(to: CGPoint(x: 0, y: lineWidth / 2))
@@ -120,6 +128,6 @@ extension CALayer {
         layer.path = path
         return layer
     }
-  
-  
+
 }
+#endif
