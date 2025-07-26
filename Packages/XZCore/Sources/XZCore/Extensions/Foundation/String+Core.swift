@@ -15,7 +15,7 @@ public extension String {
             .replacingOccurrences(of: "\n", with: "")
             .replacingOccurrences(of: " ", with: "")
     }
-    
+
     /// 根据指定格式创建Date对象
     func date(withFormat format: String) -> Date? {
         let dateFormatter = DateFormatter()
@@ -23,7 +23,7 @@ public extension String {
         dateFormatter.dateFormat = format
         return dateFormatter.date(from: self)
     }
-    
+
     /// 格式化数字字符串（整数位和小数位限制）
     func formatter(integer: Int, decimal: Int) -> String {
         // 允许数字和小数点
@@ -52,7 +52,7 @@ public extension String {
             return newText
         }
     }
-    
+
     /// 获取数字字符串小数点位数
     func getDecimalPlacesByString() -> Int {
         // 查找小数点的位置
@@ -64,7 +64,7 @@ public extension String {
         }
         return 0  // 整数没有小数位
     }
-    
+
     /// 在字符串中查找子字符串的NSRange
     func findSubStr(str: String) -> NSRange? {
         if let range = self.range(of: str) {
@@ -74,27 +74,15 @@ public extension String {
         }
         return nil
     }
-    
+
     /// 转换为Double
     func double() -> Double? {
         return Double(self)
     }
-    
+
     /// 格式化为货币显示
     func money(_ digits: Int = 4) -> String {
         return self.double()?.money(digits) ?? self
-    }
-}
-
-// MARK: - Double Extension for Money Formatting
-extension Double {
-    /// 格式化为货币显示
-    func money(_ digits: Int = 4) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = digits
-        formatter.minimumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
     }
 }
 

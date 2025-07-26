@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import XZCore
 
 @propertyWrapper
 public struct FileStorage<T: Codable> {

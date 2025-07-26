@@ -11,10 +11,7 @@ echo "🏗️ 开始构建所有XZLibrary包..."
 PACKAGES=(
     "XZCore"
     "XZNetworking"
-    "XZFileUtils"
-    "XZFoundationUtils"
     "XZUIKitUtils"
-    "XZAppKitUtils"
     "XZUIComponents"
 )
 

@@ -11,10 +11,7 @@ echo "🧪 开始测试所有XZLibrary包..."
 PACKAGES=(
     "XZCore"
     "XZNetworking"
-    "XZFileUtils"
-    "XZFoundationUtils"
     "XZUIKitUtils"
-    "XZAppKitUtils"
     "XZUIComponents"
 )
 

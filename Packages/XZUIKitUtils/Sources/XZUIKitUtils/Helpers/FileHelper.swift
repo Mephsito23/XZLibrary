@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import XZCore
 
 public enum FileHelper {
     static func loadBundledJSON<T: Decodable>(file: String) -> T {
