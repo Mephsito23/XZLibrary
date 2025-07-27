@@ -6,5 +6,6 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 *.xcframework
 Packages/*/.build
+Packages/*/build
 */*/.swiftpm/*
 .build
