@@ -18,7 +18,7 @@ public actor SSEClient {
         self.request = request
     }
 
-    func start() -> AsyncThrowingStream<String, Error> {
+    public func start() -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             let sessionConfig = URLSessionConfiguration.default
             let delegate = SSEClientDelegate(continuation: continuation)
